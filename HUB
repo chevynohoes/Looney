@@ -1,0 +1,150 @@
+local Rayfield = loadstring(game:HttpGet('https://raw.githubusercontent.com/shlexware/Rayfield/main/source'))()
+
+local Window = Rayfield:CreateWindow({
+    Name = "LooneyHUB",
+    LoadingTitle = "One Piece Online Rebirth",
+    LoadingSubtitle = "by mowgli#0001",
+    ConfigurationSaving = {
+       Enabled = false,
+       FolderName = OPOR, -- Create a custom folder for your hub/game
+       FileName = "LooneyHUB"
+    },
+    Discord = {
+       Enabled = true,
+       Invite = "tayswrld", -- The Discord invite code, do not include discord.gg/. E.g. discord.gg/ABCD would be ABCD
+       RememberJoins = true -- Set this to false to make them join the discord every time they load it up
+    },
+    KeySystem = true, -- Set this to true to use our key system
+    KeySettings = {
+       Title = "LooneyHUB",
+       Subtitle = "Key System",
+       Note = "favorite number",
+       FileName = "Key", -- It is recommended to use something unique as other scripts using Rayfield may overwrite your key file
+       SaveKey = true, -- The user's key will be saved, but if you change the key, they will be unable to use your script
+       GrabKeyFromSite = false, -- If this is true, set Key below to the RAW site you would like Rayfield to get the key from
+       Key = {"47","13"} -- List of keys that will be accepted by the system, can be RAW file links (pastebin, github etc) or simple strings ("hello","key22")
+    }
+ })
+
+ local Tab = Window:CreateTab("OPOR", 12630381344) -- Title, Image
+
+ local Section = Tab:CreateSection("Render The Entire Map")
+
+ local Button = Tab:CreateButton({
+    Name = "Load Map",
+    Callback = function()
+        local teleportDelay = 3 -- delay in seconds between teleports
+local teleportCoordinates = {
+    Vector3.new(2854.158203125, 25309.357421875, 1182.4622802734375),
+    Vector3.new(-757.9630126953125, 4.847378253936768, 359.8598937988281),
+    Vector3.new(-1747.1446533203125, 44.77552795410156, -2221.935546875),
+    Vector3.new(-1818.691162109375, 14.952795028686523, -5374.76171875),
+    Vector3.new(2073.4599609375, 27.962486267089844, -1377.63671875),
+    Vector3.new(-867.26220703125, 25.277027130126953, 1856.271240234375),
+    Vector3.new(-2541.279296875, 102.55257415771484, -1261.0830078125)
+}
+
+local playerOriginalPositions = {} -- table to store original player positions
+
+game.Players.PlayerAdded:Connect(function(player)
+    player.CharacterAdded:Connect(function(character)
+        local humanoid = character:WaitForChild("Humanoid")
+        humanoid.Died:Connect(function()
+            -- remove player from table if they die
+            playerOriginalPositions[player] = nil
+        end)
+    end)
+end)
+
+function teleportPlayers()
+    for _, player in pairs(game.Players:GetPlayers()) do
+        if player.Character and player.Character:FindFirstChild("Humanoid") and player.Character.Humanoid.Health > 0 then
+            if not playerOriginalPositions[player] then
+                -- store player's original position if not already stored
+                playerOriginalPositions[player] = player.Character.HumanoidRootPart.CFrame
+            end
+            
+            -- teleport player to each coordinate with delay
+            for _, coord in pairs(teleportCoordinates) do
+                player.Character.HumanoidRootPart.CFrame = CFrame.new(coord)
+                wait(teleportDelay)
+            end
+            
+            -- teleport player back to original position
+            player.Character.HumanoidRootPart.CFrame = playerOriginalPositions[player]
+        end
+    end
+end
+
+-- call the function once to teleport players initially
+teleportPlayers()
+
+    -- The function that takes place when the button is pressed
+    end,
+ })
+
+ local Section = Tab:CreateSection("Grabs Chest then rejoins game. (re-execute script)")
+
+ local Button = Tab:CreateButton({
+    Name = "Grab Chest",
+    Callback = function()
+        local chestsCollected = 0
+
+for i,v in pairs(game:GetService("Workspace").Chests:GetDescendants()) do
+   if chestsCollected < 13 and v:IsA("ClickDetector") and v.Parent.Parent.Active.Value == true then
+       game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = v.Parent.CFrame
+       wait(0.5)
+       fireclickdetector(v)
+       chestsCollected = chestsCollected + 1
+   end
+end
+
+if chestsCollected >= 13 then
+    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(Vector3.new(-2675.9052734375, 123.44182586669922, -870.2750854492188))
+    wait(30) -- wait for 1 minute
+    game:GetService("TeleportService"):Teleport(game.PlaceId)
+end
+
+    -- The function that takes place when the button is pressed
+    end,
+ })
+
+ local Tab = Window:CreateTab("VISUAL", 3610254229) -- Title, Image
+
+ local Section = Tab:CreateSection("ESP")
+
+ local Toggle = Tab:CreateToggle({
+    Name = "Chest ESP",
+    CurrentValue = false,
+    Flag = "Toggle1", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
+    Callback = function(Value)
+    -- The function that takes place when the toggle is pressed
+    -- The variable (Value) is a boolean on whether the toggle is true or false
+    end,
+ })
+
+ local Toggle = Tab:CreateToggle({
+    Name = "Player ESP",
+    CurrentValue = false,
+    Flag = "Toggle1", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
+    Callback = function(Value)
+    -- The function that takes place when the toggle is pressed
+    -- The variable (Value) is a boolean on whether the toggle is true or false
+    end,
+ })
+
+ local Tab = Window:CreateTab("TELEPORTS", 4370344717) -- Title, Image
+
+ Section:Set("Island Tp")
+
+ local Dropdown = Tab:CreateDropdown({
+    Name = "Islands",
+    Options = {"Baratie","Marine Island"},
+    CurrentOption = {"Option 1"},
+    MultipleOptions = false,
+    Flag = "Dropdown1", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
+    Callback = function()
+    -- The function that takes place when the selected option is changed
+    -- The variable (Option) is a table of strings for the current selected options
+    end,
+ })
